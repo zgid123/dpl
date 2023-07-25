@@ -1,4 +1,4 @@
-require 'cl'
+require 'cl_libs/cl'
 require 'stringio'
 require 'dpl/helper/squiggle'
 

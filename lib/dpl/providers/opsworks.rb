@@ -7,11 +7,12 @@ module Dpl
 
       full_name 'AWS OpsWorks'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
-      gem 'aws-sdk-opsworks', '~> 1.0'
+      gem 'aws-sdk-opsworks'
+      gem 'nokogiri'
 
       env :aws, :opsworks
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
@@ -24,20 +25,21 @@ module Dpl
       opt '--layer_ids ID', 'A layer id', type: :array
       opt '--migrate', 'Migrate the database.'
       opt '--wait_until_deployed', 'Wait until the app is deployed and return the deployment status.'
-      opt '--update_on_success', 'When wait-until-deployed and updated-on-success are both not given, application source is updated to the current SHA. Ignored when wait-until-deployed is not given.', alias: :update_app_on_success
+      opt '--update_on_success',
+          'When wait-until-deployed and updated-on-success are both not given, application source is updated to the current SHA. Ignored when wait-until-deployed is not given.', alias: :update_app_on_success
       opt '--custom_json JSON', 'Custom json options override (overwrites default configuration)'
 
-      msgs login:         'Using Access Key: %{access_key_id}',
+      msgs login: 'Using Access Key: %<access_key_id>s',
            create_deploy: 'Creating deployment ... ',
-           done:          'Done: %s',
-           waiting:       'Deploying ',
-           failed:        'Failed.',
-           success:       'Success.',
-           update_app:    'Updating application source branch/revision setting.',
+           done: 'Done: %s',
+           waiting: 'Deploying ',
+           failed: 'Failed.',
+           success: 'Success.',
+           update_app: 'Updating application source branch/revision setting.',
            app_not_found: 'App %s not found.',
-           timeout:       'Timeout: failed to finish deployment within 10 minutes.',
+           timeout: 'Timeout: failed to finish deployment within 10 minutes.',
            service_error: 'Deployment failed. OpsWorks service error: %s',
-           comment:       'Deploy build %{build_number} via Travis CI'
+           comment: 'Deploy build %<build_number>s via Travis CI'
 
       def login
         info :login
@@ -91,7 +93,7 @@ module Dpl
         {
           app_id: app_id,
           app_source: {
-            revision: git_sha,
+            revision: git_sha
           }
         }
       end
@@ -135,7 +137,7 @@ module Dpl
       end
 
       def timeout(sec, &block)
-        Timeout::timeout(sec, &block)
+        Timeout.timeout(sec, &block)
       rescue Timeout::Error
         error :timeout
       end

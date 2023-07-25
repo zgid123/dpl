@@ -2,7 +2,7 @@ $: << 'lib'
 require 'dpl/support/gems'
 
 source 'https://rubygems.org'
-ruby '>= 2.3'
+ruby '>= 3.0'
 
 gemspec name: 'dpl'
 # gem 'cl', path: '../../cl'

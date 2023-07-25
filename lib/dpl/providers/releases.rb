@@ -212,7 +212,7 @@ module Dpl
       end
 
       def exists?(file)
-        return true if File.exists?(file)
+        return true if File.exist?(file)
         error :missing_file, file
         false
       end

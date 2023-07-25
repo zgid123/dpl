@@ -1,4 +1,4 @@
-require 'cl'
+require 'cl_libs/cl'
 
 module Dpl
   class Cli < Cl
@@ -25,8 +25,7 @@ module Dpl
       args = unescape(args)
       args = untaint(args)
       args = with_cmd_opts(args, provider: 0, strategy: 1)
-      args = with_strategy_default(args, :strategy) # should be a generic dispatch feature in Cl
-      args
+      with_strategy_default(args, :strategy) # should be a generic dispatch feature in Cl
     end
 
     def unescape(args)
@@ -47,6 +46,7 @@ module Dpl
 
     def with_cmd_opt(args, cmd, pos)
       return args unless opt = args.detect { |arg| arg.start_with?("--#{cmd}") }
+
       ix = args.index(opt)
       args.delete(opt)
       value = opt.include?('=') ? opt.split('=').last : args.delete_at(ix)
@@ -56,11 +56,12 @@ module Dpl
 
     STRATEGIES = {
       'heroku' => 'api',
-      'pages'  => 'git'
+      'pages' => 'git'
     }
 
-    def with_strategy_default(args, cmd)
+    def with_strategy_default(args, _cmd)
       return args unless default = STRATEGIES[args.first]
+
       args.insert(1, default) if args[1].nil? || args[1].to_s.start_with?('--')
       args
     end
@@ -89,6 +90,7 @@ module Dpl
 
     def suggestions(name)
       return [] unless defined?(DidYouMean)
+
       DidYouMean::SpellChecker.new(dictionary: providers).correct(name)
     end
   end

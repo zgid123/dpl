@@ -1,4 +1,4 @@
-require 'cl'
+require 'cl_libs/cl'
 require 'fileutils'
 require 'forwardable'
 require 'shellwords'
